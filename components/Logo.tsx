@@ -8,11 +8,10 @@ export default function Logo() {
     <Link href="/" className="flex items-center">
       <Image
         src="/images/logo.png"
-        alt="Col & Co"
-        width={120}
-        height={20}
-        priority
-        className="h-auto w-auto object-contain"
+        alt="Logo"
+        width={100}
+        height={30}
+        className="object-contain"
       />
     </Link>
   );

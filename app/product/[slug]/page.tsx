@@ -3,21 +3,15 @@ import { notFound } from "next/navigation";
 import { featuredProducts } from "@/lib/data/products";
 import ProductDetails from "./ProductDetails";
 
-interface ProductPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const product = featuredProducts.find((p) => p.slug === params.slug);
-  
+
   if (!product) {
     return {
       title: "Product Not Found",
     };
   }
-  
+
   return {
     title: product.name,
     description: product.description,
@@ -42,12 +36,12 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params }: any) {
   const product = featuredProducts.find((p) => p.slug === params.slug);
-  
+
   if (!product) {
     notFound();
   }
-  
+
   return <ProductDetails product={product} />;
 }

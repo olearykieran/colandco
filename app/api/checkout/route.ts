@@ -1,26 +1,26 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth.config";
+import { currentUser } from "@clerk/nextjs/server";
 import { createStripeSession } from "@/lib/stripe";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
+    const user = await currentUser();
+    if (!user?.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const body = await request.json();
-    const { items } = body;
+    const { products } = body;
 
-    if (!items?.length) {
-      return new NextResponse("Items are required", { status: 400 });
+    if (!products || products.length === 0) {
+      return new NextResponse("Products are required", { status: 400 });
     }
 
-    const stripeSession = await createStripeSession(items, session.user.id);
+    const stripeSession = await createStripeSession(products, user.id);
 
-    return NextResponse.json({ sessionId: stripeSession.id });
+    return NextResponse.json({ url: stripeSession.url });
   } catch (error) {
     console.error("[CHECKOUT_ERROR]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return new NextResponse("Internal error", { status: 500 });
   }
 }
